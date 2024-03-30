@@ -43,7 +43,7 @@ public class Connect {
         try {
             JSObject jsObject = ctx.createJSObject();
             JSObject jsHeader = ctx.createJSObject();
-            setHeader(ctx, res, jsHeader);
+            setHeader(res, jsHeader);
             jsObject.set("headers", jsHeader);
             if (req.getBuffer() == 0) jsObject.set("content", new String(res.body().bytes(), req.getCharset()));
             if (req.getBuffer() == 1) {
@@ -105,10 +105,10 @@ public class Connect {
         return builder.build();
     }
 
-    private static void setHeader(QuickJSContext ctx, Response res, JSObject object) {
+    private static void setHeader(Response res, JSObject object) {
         for (Map.Entry<String, List<String>> entry : res.headers().toMultimap().entrySet()) {
             if (entry.getValue().size() == 1) object.set(entry.getKey(), entry.getValue().get(0));
-            if (entry.getValue().size() >= 2) object.set(entry.getKey(), new JSUtils<String>().toArray(ctx, entry.getValue()));
+            if (entry.getValue().size() >= 2) object.set(entry.getKey(), String.join(";",entry.getValue()));
         }
     }
     public static void cancelByTag(Object tag) {

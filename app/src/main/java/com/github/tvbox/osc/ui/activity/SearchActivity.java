@@ -278,6 +278,7 @@ public class SearchActivity extends BaseActivity {
                 keyword = s.toString().trim();
                 if (TextUtils.isEmpty(keyword)) {
                     cancel();
+                    showSuccess();
                     tv_history.setVisibility(View.VISIBLE);
                     searchTips.setVisibility(View.VISIBLE);
                     mGridView.setVisibility(View.GONE);

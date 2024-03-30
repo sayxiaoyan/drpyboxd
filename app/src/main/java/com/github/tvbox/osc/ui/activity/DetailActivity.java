@@ -90,22 +90,21 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
  * @description:
  */
 public class DetailActivity extends BaseActivity {
-    private static final int DETAIL_PLAYER_FRAME_ID = 9999999;
     private static final int PIP_BOARDCAST_ACTION_PREV = 0;
     private static final int PIP_BOARDCAST_ACTION_PLAYPAUSE = 1;
     private static final int PIP_BOARDCAST_ACTION_NEXT = 2;
-    private static PlayFragment playFragment = null;
-    private final List<Movie.Video> quickSearchData = new ArrayList<>();
+    private PlayFragment playFragment;
+    private List<Movie.Video> quickSearchData = new ArrayList<>();
     public String vodId;
     public String sourceKey;
     boolean seriesSelect = false;
     boolean PIP = Hawk.get(HawkConfig.PIC_IN_PIC, false);
     // preview : true 开启 false 关闭
-    VodInfo previewVodInfo = null;
+    private VodInfo previewVodInfo;
     boolean showPreview = Hawk.get(HawkConfig.SHOW_PREVIEW, true);
     boolean fullWindows = false;
-    ViewGroup.LayoutParams windowsPreview = null;
-    ViewGroup.LayoutParams windowsFull = null;
+    private ViewGroup.LayoutParams windowsPreview;
+    private ViewGroup.LayoutParams windowsFull;
     private LinearLayout llLayout;
     private FragmentContainerView llPlayerFragmentContainer;
     private View llPlayerFragmentContainerBlock;
@@ -132,15 +131,15 @@ public class DetailActivity extends BaseActivity {
     private VodInfo vodInfo;
     private SeriesFlagAdapter seriesFlagAdapter;
     private SeriesAdapter seriesAdapter;
-    private View seriesFlagFocus = null;
+    private View seriesFlagFocus;
     private BroadcastReceiver pipActionReceiver;
     private ImageView tvPlayUrl;
     private String PlayUrl;
     private TextView tvPlayUrl1;
-    private HashMap<String, String> mCheckSources = null;
+    private HashMap<String, String> mCheckSources;
     private SeriesGroupAdapter seriesGroupAdapter;
     private TvRecyclerView mSeriesGroupView;
-    private List<Runnable> pauseRunnable = null;
+    private List<Runnable> pauseRunnable;
     private String preFlag = "";
     private List<List<VodInfo.VodSeries>> uu;
     private int GroupCount;
@@ -148,23 +147,7 @@ public class DetailActivity extends BaseActivity {
     private String searchTitle = "";
     private boolean hadQuickStart = false;
     private List<String> quickSearchWord = new ArrayList<>();
-    private ExecutorService searchExecutorService = null;
-
-    public static int getNum(String str) {
-        try {
-            Matcher matcher = Pattern.compile("\\d+").matcher(str);
-            if (!matcher.find()) {
-                return 0;
-            }
-            String group = matcher.group(0);
-            if (TextUtils.isEmpty(group)) {
-                return 0;
-            }
-            return Integer.parseInt(group);
-        } catch (Exception e) {
-            return 0;
-        }
-    }
+    private ExecutorService searchExecutorService;
 
     @Override
     protected int getLayoutResID() {

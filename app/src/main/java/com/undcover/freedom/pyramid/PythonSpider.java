@@ -4,7 +4,13 @@ import android.content.Context;
 
 import com.chaquo.python.PyObject;
 import com.github.catvod.crawler.Spider;
+import com.github.catvod.net.OkHttp;
 import com.github.tvbox.osc.util.LOG;
+import com.github.tvbox.osc.util.VideoParseRuler;
+import com.github.tvbox.osc.util.js.Json;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,9 +18,14 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.lang.reflect.Type;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Headers;
 
 public class PythonSpider extends Spider {
     private PyObject pyApp;
@@ -108,28 +119,42 @@ public class PythonSpider extends Spider {
     }
 
     public Object[] proxyLocal(Map params) {
-        PyLog.nw("localProxy", map2json(params).toString());
-        List<PyObject> poList = pyApp.callAttr("localProxy", pySpider, map2json(params).toString()).asList();
+        if(params.containsKey("adRemove")){
+            try {
+                String adRemove = params.get("adRemove").toString();
+                String url = params.get("url").toString();
+                Map<String, String> headers = Json.toMap(URLDecoder.decode(params.get("headers").toString()));
+                String content = OkHttp.newCall(url, Headers.of(headers)).execute().body().string();
+                content = VideoParseRuler.clearAdRemove(adRemove, content);
+                return new Object[]{200, "video/MP2T", new ByteArrayInputStream(content.getBytes())};
+            } catch (Exception e) {
+                LOG.e(e);
+                return new Object[]{200, "text/plain", null};
+            }
+        } else {
+            PyLog.nw("localProxy", map2json(params).toString());
+            List<PyObject> poList = pyApp.callAttr("localProxy", pySpider, map2json(params).toString()).asList();
 
-        Map<PyObject, PyObject> headers = null;
-        if (poList.size() > 3) {
-            headers = poList.get(3).asMap();
-        }
-        int code = poList.get(0).toInt();
-        String type = poList.get(1).toString();
+            Map<PyObject, PyObject> headers = null;
+            if (poList.size() > 3) {
+                headers = poList.get(3).asMap();
+            }
+            int code = poList.get(0).toInt();
+            String type = poList.get(1).toString();
 
-        PyObject r2 = poList.get(2);
-        if (r2 == null){
+            PyObject r2 = poList.get(2);
+            if (r2 == null) {
+                return new Object[]{code, type, null, headers};
+            }
+            LOG.e("PyType", poList.get(2).type().toString());
+            if (r2.type().toString().contains("str")) {
+                return new Object[]{code, type, new ByteArrayInputStream(replaceLocalUrl(r2.toString()).getBytes()), headers};
+            } else if (r2.type().toString().contains("bytes")) {
+                return new Object[]{code, type, new ByteArrayInputStream(r2.toJava(byte[].class)), headers};
+            }
+            LOG.e("不支持此类型:" + poList.get(2).type());
             return new Object[]{code, type, null, headers};
         }
-        LOG.e("PyType", poList.get(2).type().toString());
-        if (r2.type().toString().contains("str")) {
-            return new Object[]{code, type, new ByteArrayInputStream(replaceLocalUrl(r2.toString()).getBytes()), headers};
-        } else if(r2.type().toString().contains("bytes")){
-            return new Object[]{code, type, new ByteArrayInputStream(r2.toJava(byte[].class)), headers};
-        }
-        LOG.e("不支持此类型:" + poList.get(2).type());
-        return new Object[]{code, type, null, headers};
     }
 
     public String replaceLocalUrl(String content) {

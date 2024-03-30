@@ -582,15 +582,13 @@ public class SourceViewModel extends ViewModel {
 
                         @Override
                         public void onSuccess(Response<String> response) {
-                            execute(() -> {
-                                if (type == 0) {
-                                    String xml = response.body();
-                                    xml(searchResult, xml, sourceBean.getKey());
-                                } else {
-                                    String json = response.body();
-                                    json(searchResult, json, sourceBean.getKey());
-                                }
-                            });
+                            if (type == 0) {
+                                String xml = response.body();
+                                xml(searchResult, xml, sourceBean.getKey());
+                            } else {
+                                String json = response.body();
+                                json(searchResult, json, sourceBean.getKey());
+                            }
                         }
 
                         @Override
@@ -628,10 +626,8 @@ public class SourceViewModel extends ViewModel {
                         @Override
                         public void onSuccess(Response<String> response) {
                             String json = response.body();
-                            execute(() -> {
-                                LOG.i(json);
-                                json(searchResult, json, sourceBean.getKey());
-                            });
+                            LOG.i(json);
+                            json(searchResult, json, sourceBean.getKey());
                         }
 
                         @Override
@@ -675,15 +671,13 @@ public class SourceViewModel extends ViewModel {
 
                         @Override
                         public void onSuccess(Response<String> response) {
-                            execute(() -> {
-                                if (type == 0) {
-                                    String xml = response.body();
-                                    xml(quickSearchResult, xml, sourceBean.getKey());
-                                } else {
-                                    String json = response.body();
-                                    json(quickSearchResult, json, sourceBean.getKey());
-                                }
-                            });
+                            if (type == 0) {
+                                String xml = response.body();
+                                xml(quickSearchResult, xml, sourceBean.getKey());
+                            } else {
+                                String json = response.body();
+                                json(quickSearchResult, json, sourceBean.getKey());
+                            }
                         }
 
                         @Override
@@ -721,10 +715,8 @@ public class SourceViewModel extends ViewModel {
                         @Override
                         public void onSuccess(Response<String> response) {
                             String json = response.body();
-                            execute(() -> {
-                                LOG.i(json);
-                                json(quickSearchResult, json, sourceBean.getKey());
-                            });
+                            LOG.i(json);
+                            json(quickSearchResult, json, sourceBean.getKey());
                         }
 
                         @Override

@@ -173,6 +173,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/vs_20">
+
         <RelativeLayout
             android:id="@+id/search_tips"
             android:layout_width="match_parent"
@@ -186,6 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginTop="8dp"
+                android:focusable="false"
                 android:textSize="@dimen/ts_22"
                 android:text="搜索历史" />
 
@@ -196,6 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="20dp"
+                android:focusable="true"
                 android:textSize="@dimen/ts_22"
                 android:text="清除记录"
                 android:layout_alignParentRight="true" />
@@ -207,6 +210,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="10dp"
+            android:focusable="true"
             app:backgroundResource="@drawable/shape_user_focus"
             app:horizontalSpacing="10dp"
             app:itemColor="@android:color/white"

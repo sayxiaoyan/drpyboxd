@@ -326,6 +326,7 @@ public class RemoteServer extends NanoHTTPD {
                     }
                     if (fileName.equals("/proxy")) {
                         Map<String, String> params = session.getParms();
+
                         if (params.containsKey("do")) {
                             Object[] rs = ApiConfig.get().proxyLocal(params);
                             try {
